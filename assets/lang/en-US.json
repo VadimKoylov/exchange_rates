@@ -1,0 +1,9 @@
+{
+  "update": "UPDATE AT {}",
+  "change": "Since yesterday {} \n{} by {} percents",
+  "same": "Since yesterday {} hasn't changing",
+  "USD": "dollar",
+  "RUB": "ruble",
+  "EUR": "euro",
+  "error": "Error"
+}
