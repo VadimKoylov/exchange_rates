@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 class ConvertModel {
   ConvertModel({
     required this.success,
@@ -13,7 +15,7 @@ class ConvertModel {
   DateTime startDate;
   DateTime endDate;
   String source;
-  Map<String, dynamic> quotes;
+  Map<String, Quote> quotes;
 
   factory ConvertModel.fromJson(Map<String, dynamic> json) => ConvertModel(
         success: json["success"],
@@ -21,35 +23,31 @@ class ConvertModel {
         startDate: DateTime.parse(json["start_date"]),
         endDate: DateTime.parse(json["end_date"]),
         source: json["source"],
-        quotes: Map.from(json["quotes"])
-            .map((k, v) => MapEntry<String, dynamic>(k, v)),
+        quotes: Map.from(json["quotes"]).map((k, v) => MapEntry<String, Quote>(
+            DateFormat("yyyy-MM-dd").format(DateTime.parse(k)),
+            Quote.fromJson(v))),
       );
 
   Map<String, dynamic> toJson() => {
         "success": success,
         "timeframe": timeframe,
-        "start_date":
-            "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
-        "end_date":
-            "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
+        "start_date": startDate.toIso8601String(),
+        "end_date": endDate.toIso8601String(),
         "source": source,
-        "quotes": Map.from(quotes)
-            .map((k, v) => MapEntry<String, dynamic>(k, v)),
       };
 }
 
-// class Quote {
-//   Quote({
-//     required this.result,
-//   });
-//
-//   double result;
-//
-//   factory Quote.fromJson(Map<String, dynamic> json) => Quote(
-//         result: json["USDRUB"].toDouble(),
-//       );
-//
-//   Map<String, dynamic> toJson() => {
-//         "USDRUB": result,
-//       };
-// }
+class Quote {
+  Quote({
+    required this.result,
+  });
+
+  double result;
+
+  factory Quote.fromJson(Map<String, dynamic> json) {
+    final key = json.keys.first;
+    return Quote(
+      result: json[key]!.toDouble(),
+    );
+  }
+}

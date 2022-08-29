@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -72,14 +71,10 @@ abstract class _HomeStore with Store {
       final today = DateFormat("yyyy-MM-dd").format(DateTime.now());
       convert = await Api()
           .getRatio(startDate: yesterday, endDate: today, from: from, to: to);
-      final newCurrency = jsonDecode(const JsonEncoder.withIndent('  ')
-          .convert(convert!.quotes[yesterday]));
-      final oldCurrency = jsonDecode(
-          const JsonEncoder.withIndent('  ').convert(convert!.quotes[today]));
-      final currencyKey = from + to;
-      setDifference(oldCurrency[currencyKey].toString(),
-          newCurrency[from + to].toString());
-      setAmount((newCurrency[currencyKey] as double).toStringAsFixed(3));
+      final newCurrency = convert!.quotes[yesterday]!.result;
+      final oldCurrency = convert!.quotes[today]!.result;
+      setDifference(oldCurrency.toString(), newCurrency.toString());
+      setAmount(newCurrency.toStringAsFixed(3));
       isLoading = false;
       isSuccess = true;
     } catch (e, trace) {
@@ -92,11 +87,13 @@ abstract class _HomeStore with Store {
   String getDifference(int compare, String _amount, String _currency) {
     switch (compare) {
       case -1:
-        return "change".tr(args: [_currency.tr(), "fell", _amount]);
+        return "change".plural(int.parse(_amount),
+            args: [_currency.tr(), "fell".tr(), _amount]);
       case 0:
         return "same".tr(args: [_currency.tr()]);
       case 1:
-        return "change".tr(args: [_currency.tr(), "grow", _amount]);
+        return "change".plural(int.parse(_amount),
+            args: [_currency.tr(), "grow".tr(), _amount]);
       default:
         return "";
     }

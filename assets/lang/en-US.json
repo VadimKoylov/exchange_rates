@@ -1,9 +1,18 @@
 {
   "update": "UPDATE AT {}",
-  "change": "Since yesterday {} \n{} by {} percents",
+  "change": {
+    "one": "Since yesterday {} \n{} by {} percent",
+    "two": "Since yesterday {} \n{} by {} percents",
+    "few": "Since yesterday {} \n{} by {} percents",
+    "many": "Since yesterday {} \n{} by {} percents"
+  },
   "same": "Since yesterday {} hasn't changing",
   "USD": "dollar",
   "RUB": "ruble",
   "EUR": "euro",
-  "error": "Error"
+  "error": "Error",
+  "fell": "fell",
+  "grow": "grow",
+  "refresh": "Refresh",
+  "loading": "Loading..."
 }

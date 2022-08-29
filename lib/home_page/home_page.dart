@@ -30,90 +30,112 @@ class _HomePageState extends State<HomePage> {
       body: Observer(
         builder: (_) => store.amount.isEmpty
             ? const Center(child: CircularProgressIndicator.adaptive())
-            : Padding(
-                padding: const EdgeInsets.only(left: 16.0, bottom: 25.0),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(height: 160),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                store.from,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: AppColors.grey.withOpacity(0.7),
-                                ),
-                              ),
-                              Icon(
-                                Icons.arrow_right_alt_outlined,
-                                color: AppColors.grey.withOpacity(0.7),
-                              ),
-                              Text(
-                                store.to,
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: AppColors.grey.withOpacity(0.7),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          store.isLoading
-                              ? const CircularProgressIndicator.adaptive()
-                              : Text(
-                                  store.amount,
-                                  style: const TextStyle(
-                                    fontSize: 80.0,
-                                    color: AppColors.grey,
+            : SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, bottom: 25.0),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 160),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  store.from,
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: AppColors.grey.withOpacity(0.7),
                                   ),
                                 ),
-                          const SizedBox(height: 20),
-                          Observer(
-                            builder: (_) => Text(
-                              store.percent,
-                              style: TextStyle(
-                                fontSize: 17.0,
-                                fontStyle: FontStyle.italic,
-                                color: store.growing != -1
-                                    ? AppColors.green
-                                    : AppColors.red,
-                              ),
-                              textAlign: TextAlign.center,
+                                Icon(
+                                  Icons.arrow_right_alt_outlined,
+                                  color: AppColors.grey.withOpacity(0.7),
+                                ),
+                                Text(
+                                  store.to,
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: AppColors.grey.withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 100,
+                              width: double.maxFinite,
+                              child: store.isLoading
+                                  ? const Center(
+                                      child:
+                                          CircularProgressIndicator.adaptive(),
+                                    )
+                                  : Text(
+                                      store.amount,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 80.0,
+                                        color: AppColors.grey,
+                                      ),
+                                    ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 50,
+                              width: double.maxFinite,
+                              child: store.isLoading
+                                  ? Text(
+                                      "loading".tr(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 17.0,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.black,
+                                      ),
+                                    )
+                                  : Text(
+                                      store.percent,
+                                      style: TextStyle(
+                                        fontSize: 17.0,
+                                        fontStyle: FontStyle.italic,
+                                        color: store.growing != -1
+                                            ? AppColors.green
+                                            : AppColors.red,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: InkWell(
+                          onTap: store.isLoading
+                              ? null
+                              : () {
+                                  modalBottomSheet();
+                                },
+                          child: SvgPicture.asset("assets/icons/menu.svg"),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          "update".tr(
+                            args: [DateFormat('kk:mm').format(DateTime.now())],
                           ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: InkWell(
-                        onTap: store.isLoading
-                            ? null
-                            : () {
-                                modalBottomSheet();
-                              },
-                        child: SvgPicture.asset("assets/icons/menu.svg"),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "update".tr(
-                          args: [DateFormat('kk:mm').format(DateTime.now())],
-                        ),
-                        style: TextStyle(
-                          color: AppColors.grey.withOpacity(0.4),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
+                          style: TextStyle(
+                            color: AppColors.grey.withOpacity(0.4),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
       ),
@@ -126,11 +148,12 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return SizedBox(
-          height: 380,
+          height: 400,
           child: DraggableScrollableSheet(
             initialChildSize: 1.0,
             expand: false,
             builder: (context, scrollController) => ListView.separated(
+              physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
                 vertical: 15.0,
@@ -183,11 +206,8 @@ class _HomePageState extends State<HomePage> {
                   onTap: () async {
                     store.setCurrency(store.couples[index]);
                     Navigator.pop(context);
-                    store.getRation().then((value) {
-                      if (!store.isSuccess) {
-                        AlertDialogWidget.showErrorDialog(context);
-                      }
-                    });
+                    await store.getRation();
+                    if (!store.isSuccess) _showDialog();
                   },
                 ),
               ),
@@ -195,6 +215,13 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       },
+    );
+  }
+
+  Future<void> _showDialog() async {
+    await AlertDialogWidget.showErrorDialog(
+      context,
+      onRefresh: store.getRation,
     );
   }
 }

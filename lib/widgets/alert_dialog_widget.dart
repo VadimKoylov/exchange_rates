@@ -6,11 +6,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AlertDialogWidget {
-  static Future<void> showErrorDialog(BuildContext context) async {
+  static Future<void> showErrorDialog(
+    BuildContext context, {
+    required Function() onRefresh,
+  }) async {
     final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const CircularProgressIndicator.adaptive(),
+        const Icon(
+          Icons.error,
+          size: 50,
+        ),
         const SizedBox(
           height: 15,
           width: 15,
@@ -31,6 +37,15 @@ class AlertDialogWidget {
         builder: (context) {
           return CupertinoAlertDialog(
             content: content,
+            actions: [
+              CupertinoButton(
+                onPressed: () {
+                  onRefresh();
+                  Navigator.pop(context);
+                },
+                child: Text("refresh".tr()),
+              ),
+            ],
           );
         },
       );
@@ -50,6 +65,15 @@ class AlertDialogWidget {
                 ),
               ),
               content: content,
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    onRefresh();
+                    Navigator.pop(context);
+                  },
+                  child: Text("refresh".tr()),
+                ),
+              ],
             ),
           );
         },

@@ -6,7 +6,7 @@ import 'package:exchange_rates/model/convert_model.dart';
 class Api {
   final dio = Dio();
   static const String baseUrl = "https://api.apilayer.com/currency_data/";
-  static const String baseToken = "neQytxMQPFLw2S8ApE56Hk4lJ34KihgW";
+  static const String baseToken = "6JDTOWRwLRWBFW0FmRD7UOT9SgmSOh1d";
 
   Api() {
     dio.options.headers['content-Type'] = 'application/json';
